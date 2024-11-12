@@ -14,6 +14,19 @@
  limitations under the License.
  */
 
+if ('serviceWorker' in navigator) {
+  // console.log(sw)
+  window.addEventListener('load', async () => {
+    // Try to register the service worker.
+    try {
+      const reg = await navigator.serviceWorker.register('../service-worker.js');
+      console.log('Service worker registered! 😎', reg);
+    } catch (err) {
+      console.log('😥 Service worker registration failed: ', err);
+    }
+  })
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
   // Set up the editor
   const { Editor } = await import('./app/editor.js');

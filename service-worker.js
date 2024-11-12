@@ -13,3 +13,35 @@ Copyright 2021 Google LLC
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+const cacheKey = 'cache-key-v1'
+
+const preCacheResources = ['/', '/index.html', '/css/style.css', '/js/main.js', '/js/app/editor.js', '/js/lib/actions.js'];
+
+self.addEventListener('install', (event) => {
+     console.log('Service worker install event:', event);
+     event.waitUntil(
+          caches.open(cacheKey)
+               .then(cache => {
+                    return cache.addAll(preCacheResources)
+               })
+
+     )
+});
+
+self.addEventListener('activate', (event) => {
+     console.log('Service worker activate event!', event);
+});
+
+self.addEventListener('fetch', (event) => {
+     console.log('Fetch intercepted for:', event.request.url);
+     event.respondWith(
+          caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+               console.log('hit cache', cachedResponse)
+               return cachedResponse;
+          }
+          return fetch(event.request);
+          }),
+     );
+});
+   
